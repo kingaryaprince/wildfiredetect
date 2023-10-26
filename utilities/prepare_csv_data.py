@@ -161,7 +161,7 @@ def drop_nearby(df, nearby_dist=0.001, min_samples=1):
     return gdf
 
 if __name__ == '__main__':
-    csv_in_dir = rf"C:\Prince\Learn\ML\wildfire\data\csv\recent"
+    csv_in_dir = rf"C:\wildfire\data\csv\recent"
     prepared_df = prepare_data(
         csv_in_dir=csv_in_dir,
         start_date='2016-08-01',

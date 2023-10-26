@@ -27,6 +27,6 @@ def filter_csv(csv_dir, start_date, end_date):
 
 
 if __name__ == '__main__':
-    csv_dir = r"C:\Prince\Learn\ML\wildfire\data\csv\2023"
+    csv_dir = r"C:\wildfire\data\csv\2023"
     df = filter_csv(csv_dir, start_date='2023-08-07', end_date='2023-08-15')
     print(df)

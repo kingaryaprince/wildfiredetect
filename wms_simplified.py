@@ -6,7 +6,7 @@ from wms_req import download_layer
 
 if __name__ == "__main__":
     data_collection = DataCollection.SENTINEL2_L2A
-    csv_in_dir = rf"C:\Prince\Learn\ML\wildfire\data\csv\2010_2019"
+    csv_in_dir = rf"C:\wildfire\data\csv\2010_2019"
     base_out_dir = rf"C:\wildfire\data\images\2010\possible-fire"
 
     config = SHConfig()
