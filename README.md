@@ -4,7 +4,7 @@ This project consists of two primary components:
 
 Sentinel Image Downloader (wms_simplified.py) - Downloads wildfire and non-wildfire images from Sentinel-2 using specified parameters based on VIIRS data.
 
-Wildfire Detection (fire_detect_cnn.py) - A CNN based deep learning model that is trained on the downloaded images or other wildfire images labelled as fire and nofire
+Wildfire Detection (ml\fire_detect_cnn.py) - A CNN based deep learning model that is trained on the downloaded images or other wildfire images labelled as fire and nofire
 
 Requirements
 Python 3.x
