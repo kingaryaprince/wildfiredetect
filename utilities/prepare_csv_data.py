@@ -8,8 +8,6 @@ from shapely.geometry import Point
 from sklearn.cluster import DBSCAN
 import numpy as np
 
-# from utilities.process_csv import filter_csv
-
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 
@@ -102,41 +100,6 @@ def filter_by_coordinates(df, longitude, latitude, buffer):
 
     LOGGER.debug(f"Shape after adjusted co-ords: {west}, {south} ; {east} {north} including buffer: {buffer} is: {df.shape} and Data is:\n{df}")
     return df
-
-
-def drop_nearby_slow(df, nearby_dist=0.001):
-    geometry = [Point(xy) for xy in zip(df['longitude'], df['latitude'])]
-    gdf = gpd.GeoDataFrame(df, geometry=geometry)
-
-    gdf = gdf.sort_values(by='fire_date', ascending=False)
-
-    # Initialize an empty list to keep track of indices to drop
-    indices_to_drop = []
-
-    # Iterate over the GeoDataFrame and drop close points
-    for idx, row in gdf.iterrows():
-        # Find points that are within the buffer distance and have the same date
-        close_points = gdf[
-            (gdf.geometry.buffer(nearby_dist).intersects(row['geometry'])) & (gdf['acq_date'] == row['acq_date'])] # originally fire_date
-        close_indices = close_points.index.tolist()
-
-        # Remove the current index from close_indices
-        close_indices.remove(idx)
-
-        # Add close indices to indices_to_drop list
-        indices_to_drop.extend(close_indices)
-
-    # gdf = gdf.drop(indices_to_drop).reset_index(drop=True)
-    pd.set_option('display.max_columns', None)  # or set a specific number like 50
-    pd.set_option('display.width', None)  # set width to the maximum available screen width
-    pd.set_option('display.max_colwidth', None)  # display full column data
-
-    LOGGER.debug(f"Shape before removing close by indices is {gdf.shape} and Data is:\n{gdf}")
-    # Drop the close indices and also the generated column geometry
-    gdf = gdf.drop(columns=['geometry'], index=indices_to_drop)
-    LOGGER.debug(f"Shape after drop-near-by with buffer {nearby_dist} is {gdf.shape} and Data is:\n{gdf}")
-
-    return (gdf)
 
 
 def drop_nearby(df, nearby_dist=0.001, min_samples=1):
