@@ -20,67 +20,28 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=lo
 LOGGER = logging.getLogger(__name__)
 
 
-def download_layer(config,
-                   data_collection,
-                   layer,
-                   csv_in_dir,
-                   base_out_dir,
-                   image_format,
-                   buffer_size,
-                   img_size,
-                   longitude,
-                   latitude,
-                   start_date='2018-11-01',
-                   end_date='2018-11-30',
-                   backward_days=1,
-                   forward_days=1,
-                   max_rows=50,
-                   rand_seed=45,
-                   fire_confidence=['h', 'high']
-                   ):
-
-    project_name = data_collection.name[-6:]
-    out_dir = os.path.join(base_out_dir, project_name)
-    os.makedirs(out_dir, exist_ok=True)
-
-    df = prepare_data(
-        csv_in_dir=csv_in_dir,
-        backward_days=backward_days,
-        forward_days=forward_days,
-        max_rows=max_rows,
-        rand_seed=rand_seed,
-        start_date=start_date,
-        end_date=end_date,
-        longitude=longitude,
-        latitude=latitude,
-        fire_confidence=fire_confidence
-    )
-
-    LOGGER.debug(f"Qualified df: {df}")
-    if not df.empty:
-        for _, row in df.iterrows():
-            process_row(config=config, row=row, out_dir=out_dir, buffer_size=buffer_size, layer=layer,
-                        img_size=img_size, image_format=image_format)
-            time.sleep(5 * random.randint(1, 5))
-    else:
-        LOGGER.error(f"Nothing is done. Data frame is empty")
-
-
-def extract_row_data(row: pd.Series):
+def extract_row_data(row):
+    """ Extract necessary data from the row """
     return row['latitude'], row['longitude'], row['fire_date'], row['start_date'], row['end_date']
 
 
-def process_row(config, row, out_dir, buffer_size=0.1, img_size=None, layer='2_TRUECOLOR', max_cc=0.3,
-                image_format=MimeType.PNG, data_collection=DataCollection.SENTINEL2_L2A):
+def mime2ext(image_format):
+    """ Convert MIME type to file extension """
+    mime_to_extension = {
+        MimeType.JPG: 'jpg',
+        MimeType.PNG: 'png',
+        MimeType.TIFF: 'tif',
+    }
+    return mime_to_extension.get(image_format)
+
+
+def process_row(config, row, out_dir, buffer_size=0.1, img_size=None, layer='TRUECOLOR', max_cc=0.3,
+                image_format=MimeType.JPG, data_collection=DataCollection.SENTINEL2_L2A):
+    """ Process individual row from dataframe """
     latitude, longitude, fire_date, adj_start_date, adj_end_date = extract_row_data(row)
 
-    LOGGER.info(
-        f"Fetching images for longitude={longitude}, latitude={latitude}, "
-        f"fire_date={fire_date} start_date={adj_start_date}, end_date={adj_end_date}"
-    )
-
     bbox = convert2bbox(longitude=longitude, latitude=latitude, buffer_size=buffer_size)
-    time_interval = adj_start_date.strftime('%Y-%m-%dT%H:%M:%S'), adj_end_date.strftime('%Y-%m-%dT%H:%M:%S')
+    time_interval = (adj_start_date.strftime('%Y-%m-%dT%H:%M:%S'), adj_end_date.strftime('%Y-%m-%dT%H:%M:%S'))
 
     try:
         wms_request = WmsRequest(
@@ -123,51 +84,50 @@ def process_row(config, row, out_dir, buffer_size=0.1, img_size=None, layer='2_T
                 LOGGER.info(f"Image is saved as {full_path}")
 
         else:
-            LOGGER.debug(f"No images with maxx-cc under {max_cc * 100:.2f}% between {time_interval}")
+            LOGGER.debug(f"No images with maxx cc under {max_cc * 100:.2f}% between {time_interval}")
 
     except DownloadFailedException as e:
         LOGGER.error(f"Error from Search catalog: {str(e)}")
 
 
-def mime2ext(image_format):
-    mime_to_extension = {
-        MimeType.JPG: 'jpg',
-        MimeType.PNG: 'png',
-        MimeType.TIFF: 'tif',
-    }
+def download_layer(config, data_collection, layer, csv_in_dir, base_out_dir, buffer_size, img_size,
+                   start_date, end_date, backward_days, forward_days, max_rows, rand_seed,
+                   longitude=None, latitude=None, image_format=MimeType.JPG, fire_confidence=['h', 'high', 'n', 'nominal']):
+    """ Download specific layers """
+    project_name = data_collection.name[-6:]
+    out_dir = os.path.join(base_out_dir, project_name)
+    os.makedirs(out_dir, exist_ok=True)
 
-    return mime_to_extension.get(image_format)
+    df = prepare_data(
+        csv_in_dir=csv_in_dir,
+        backward_days=backward_days,
+        forward_days=forward_days,
+        max_rows=max_rows,
+        rand_seed=rand_seed,
+        start_date=start_date,
+        end_date=end_date,
+        longitude=longitude,
+        latitude=latitude,
+        fire_confidence=fire_confidence
+    )
+
+    LOGGER.debug(f"Qualified df: {df}")
+    if not df.empty:
+        for _, row in df.iterrows():
+            process_row(config=config, row=row, out_dir=out_dir, buffer_size=buffer_size, layer=layer,
+                        img_size=img_size, image_format=image_format)
+            time.sleep(5 * random.randint(1, 5))
+    else:
+        LOGGER.error(f"Nothing is done. Dataframe is empty")
 
 
 if __name__ == "__main__":
-    data_collection = DataCollection.SENTINEL2_L2A
-    csv_in_dir = rf"C:\wildfire\data\csv\recent"
-    base_out_dir = rf"C:\wildfire\data\images"
-    # longitude = -121.437222
-    # latitude = 39.810278
-    longitude = None
-    latitude = None
-
     config = SHConfig()
-
-    if not config.sh_client_id or not config.sh_client_secret or not config.instance_id:
+    if not all([config.sh_client_id, config.sh_client_secret, config.instance_id]):
         config.instance_id = os.getenv('INSTANCE_ID')
 
-    download_layer(config,
-                   data_collection,
-                   layer='TRUECOLOR',
-                   csv_in_dir=csv_in_dir,
-                   base_out_dir=base_out_dir,
-                   image_format=MimeType.JPG,
-                   buffer_size=0.05,
-                   img_size=(350, 350),
-                   longitude=longitude,
-                   latitude=latitude,
-                   start_date='2016-01-01',
-                   end_date='2023-10-30',
-                   backward_days=0,
-                   forward_days=1,
-                   max_rows=1000,
-                   rand_seed=13,
-                   fire_confidence=['h', 'high', 'n', 'nominal']
-                   )
+    download_layer(config=config, data_collection=DataCollection.SENTINEL2_L2A, layer='TRUECOLOR',
+                   csv_in_dir=r"C:\wildfire\data\csv\recent", base_out_dir=r"C:\wildfire\data\images",
+                   buffer_size=0.05, img_size=(350, 350), start_date='2016-01-01', end_date='2023-10-30',
+                   backward_days=0, forward_days=1, max_rows=1000, rand_seed=13,
+                   fire_confidence=['h', 'high', 'n', 'nominal'])
