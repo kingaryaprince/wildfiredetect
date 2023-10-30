@@ -132,8 +132,8 @@ if __name__ == '__main__':
         longitude=-119.417931,
         latitude=36.778259,
         max_rows=100,
-        backward_days=360,
-        forward_days=-60,
+        backward_days=21,
+        forward_days=-7,
         fire_confidence=['h', 'high', 'n', 'nominal'],
         filter_buffer=0.1
     )
@@ -144,4 +144,4 @@ if __name__ == '__main__':
     pd.set_option('display.width', None)  # set width to the maximum available screen width
     pd.set_option('display.max_colwidth', None)  # display full column data
 
-    print(prepared_df)
+    LOGGER.debug(prepared_df)
