@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
     download_layer(config,
                    data_collection,
-                   layer='2_TRUECOLOR',
+                   layer='TRUECOLOR',
                    csv_in_dir=csv_in_dir,
                    base_out_dir=base_out_dir,
                    image_format=MimeType.JPG,
@@ -163,11 +163,11 @@ if __name__ == "__main__":
                    img_size=(350, 350),
                    longitude=longitude,
                    latitude=latitude,
-                   start_date='2016-01-01',     # used for date filtering
+                   start_date='2016-01-01',
                    end_date='2023-10-30',
-                   backward_days=11,
-                   forward_days=11,
+                   backward_days=0,
+                   forward_days=1,
                    max_rows=1000,
                    rand_seed=13,
-                   fire_confidence=['h', 'high']
+                   fire_confidence=['h', 'high', 'n', 'nominal']
                    )
