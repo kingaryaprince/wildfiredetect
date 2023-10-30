@@ -36,8 +36,14 @@ Run the downloader with:
 python wms_simplified.py backward_days=0 forward_days=1
 By default, images will be saved in the C:\wildfire\data\images\<collection-abbreviation> directory. 
 
+The program will download all images available between backward_days prior to fire_date (or acq_date) and forward_days after the fire_date for the specific locatiom. 
+If a negative value is passed to the forward_days, it gets substracted from fire_date 
+(e.g. backward_days=30 and forward_days=-7, will extract all available images from 30 to 7 days prior to the fire
+
 For easy identification of fire images, it is better to download the images with TRUECOLOR and FIREMASK that are configured under the SntinelHub instance. 
 Please refer to https://docs.sentinel-hub.com/api/latest/api/ogc/wms/for downloading SentinelHub images using Web Mapping Service (WMS)
+
+Passing negative days
 
 After downloading, images with fire should be moved to the fire folder, and non-fire images should be moved to the nofire folder.
 
@@ -51,16 +57,17 @@ After collecting and categorizing the images, the next step is to train and test
 
 python fire_detect_cnn.py --path C:/wildfire/data/images/all --epochs 10 --batch 32 --optimizer adam --train
 
-If passing --train, the program will train and test the model. However, when passing test, it will just test the model. If specifiying test, make sure to pass the previously trained model path
+If passing --train, the program will train and test the model. 
+However, when passing --test, it will just test the model. If specifiying test, make sure to pass the previously trained model path
 
-The trained model will be saved in the format C:/wildfire/models/best_model_{optimizer}_{epochs}_{timestamp}.keras
+The best model based on loss will be saved under path/best_model_{optimizer}_{epochs}_{timestamp}.keras
 
 A performance plot (accuracy and loss) for the model during training and validation is saved alongside the model with .png extension.
 Please note: The given paths are default and can be modified as needed. Ensure all directories exist or are created before running the scripts. 
 
 Always remember to respect image copyrights and terms of use when using SentinelHub services.
 
-Image download (wms_simplified.py) relies on the prepare_csv_data, which preprocesses all the VIIRS fire data from a specific directory.
+Image download (wms_simplified.py) relies on  prepare_csv_data, which preprocesses all the VIIRS fire data saved under a specific directory (pointed by csv_in_dir parameter).
 The processing involves filtering, transforming, and cleaning the data to make it more meaningful and easier to analyze.
 
 License
