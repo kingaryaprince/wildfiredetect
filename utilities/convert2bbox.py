@@ -1,7 +1,7 @@
 from sentinelhub import CRS, BBox
 
 
-def convert2bbox(longitude, latitude, buffer_size=0.02):
+def convert2bbox(longitude, latitude, buffer_size=0.05):
     return BBox(
         bbox=[
             longitude - buffer_size,
