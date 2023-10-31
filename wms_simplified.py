@@ -11,12 +11,16 @@ if __name__ == "__main__":
 
     config = SHConfig()
 
-    if not config.sh_client_id or not config.sh_client_secret or not config.instance_id:
+    # Set the INSTANCE_ID, SH_CLIENT_ID and SH_CLIENT_SECRET in the environment  
+    if not all([config.sh_client_id, config.sh_client_secret, config.instance_id]):
         config.instance_id = os.getenv('INSTANCE_ID')
+        config.sh_client_id = os.getenv('SH_CLIENT_ID')
+        config.sh_client_secret = os.getenv('SH_CLIENT_SECRET')
+      
 
     download_layer(config,
                    data_collection,
-                   layer='2_TRUECOLOR',
+                   layer='TRUECOLOR',
                    csv_in_dir=csv_in_dir,
                    base_out_dir=base_out_dir,
                    image_format=MimeType.JPG,
@@ -26,7 +30,7 @@ if __name__ == "__main__":
                    latitude=None,
                    start_date='2010-01-01',
                    end_date='2023-10-30',
-                   backward_days=1,
+                   backward_days=0,
                    forward_days=1,
                    max_rows=5000,
                    rand_seed=23,
