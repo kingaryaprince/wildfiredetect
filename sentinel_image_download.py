@@ -108,8 +108,9 @@ def process_row(config, row, out_dir, buffer_size=0.1, img_size=None, layer='TRU
         LOGGER.error(f"Error from Search catalog: {str(e)}")
 
 
-def download_layer(config, data_collection, layer, csv_in_dir, base_out_dir, buffer_size, img_size,
-                   start_date, end_date, backward_days, forward_days, max_rows, rand_seed,
+def download_layer(config, csv_in_dir, base_out_dir, data_collection, 
+                   start_date, end_date, backward_days, forward_days, layer,
+                   buffer_size=0.05, img_size=(350,350), max_rows=1000, rand_seed=45,
                    longitude=None, latitude=None, image_format=MimeType.JPG, fire_confidence=['h', 'high', 'n', 'nominal']):
     
     """
