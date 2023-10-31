@@ -22,10 +22,9 @@ def prepare_data(csv_in_dir: str, start_date: str, end_date: str, backward_days:
     df = filter_csv_by_date(csv_in_dir, start_date, end_date, fire_confidence, columns_to_read)
     LOGGER.debug(f"Shape after initial date filtering is: {df.shape} and Data is:\n{df}")
 
+    # If longitude or latitude is passed, extract only rows for those specific location inlcuding some buffer
     if latitude or longitude:
         df = filter_by_coordinates(df, longitude, latitude, filter_buffer)
-
-    # df = df.sample(frac=1, random_state=rand_seed).head(max_rows)     # Commented. we should filter towards end
 
     df['acq_time'] = df['acq_time'].astype(str).str.zfill(4)
     df['fire_date'] = pd.to_datetime(
@@ -34,7 +33,6 @@ def prepare_data(csv_in_dir: str, start_date: str, end_date: str, backward_days:
         df['acq_time'].str[2:]
     )
 
-    # change it to acq date to keep only date portion
     df['start_date'] = df['fire_date'] - timedelta(days=backward_days)
     df['end_date'] = df['fire_date'] + timedelta(days=forward_days)
 
@@ -44,15 +42,15 @@ def prepare_data(csv_in_dir: str, start_date: str, end_date: str, backward_days:
 
     LOGGER.debug(f"Shape after de-dup for co-ordinates and acq_date {df.shape} and Data is:\n{df}")
 
-    # Pick 10x random rows than required and pass it to drop_nearby, as passing the entire data set is not efficient
-    df = df.sample(frac=1, random_state=rand_seed).head(max_rows * 10)    # newly added
+    # Pick 10x random rows than required and pass it to drop_nearby, as passing the entire data set is not efficient.
+    # By picking 10x more rows, we would still endup with our initial desired number of rows even after dropping the nearby locations
+    df = df.sample(frac=1, random_state=rand_seed).head(max_rows * 10)
     LOGGER.debug(f"Shape after initial sampling after de-dup {df.shape} and Data is:\n{df}")
 
     nearby_dist = 0.0001               # Set to a proximity to minimize the close by locations
     df = drop_nearby(df, nearby_dist) # Drop location that are close to each other from same fire time
 
-    # df = df.sample(frac=1, random_state=rand_seed).reset_index(drop=True).head(max_rows)    # added new
-    df = df.sample(frac=1, random_state=rand_seed).head(max_rows)    # removed reset index
+    df = df.sample(frac=1, random_state=rand_seed).head(max_rows)
 
     LOGGER.debug(f"Shape after final sample {max_rows} rows is {df.shape} and Data is:\n{df}")
     return df
