@@ -2,7 +2,7 @@ Wildfire Detection using Deep Learning and Sentinel-2 Images
 
 This project consists of two primary components:
 
-Sentinel Image Downloader (wms_simplified.py) - Downloads wildfire and non-wildfire images from Sentinel-2 using specified parameters based on VIIRS data.
+Sentinel Image Downloader (sentinel_image_download.py) - Downloads wildfire and non-wildfire images from Sentinel-2 using specified parameters based on VIIRS data.
 
 Wildfire Detection (ml\fire_detect_cnn.py) - A CNN based deep learning model that is trained on the downloaded images or other wildfire images labelled as fire and nofire
 
@@ -33,7 +33,7 @@ Before running the script, make sure you've set up your SentinelHub credentials 
 
 Run the downloader with:
 
-python wms_simplified.py backward_days=0 forward_days=1
+python sentinel_image_download.py backward_days=0 forward_days=1
 By default, images will be saved in the C:\wildfire\data\images\<collection-abbreviation> directory. 
 
 The program will download all images available between backward_days prior to fire_date (or acq_date) and forward_days after the fire_date for the specific locatiom. 
@@ -67,7 +67,7 @@ Please note: The given paths are default and can be modified as needed. Ensure a
 
 Always remember to respect image copyrights and terms of use when using SentinelHub services.
 
-Image download (wms_simplified.py) relies on  prepare_csv_data, which preprocesses all the VIIRS fire data saved under a specific directory (pointed by csv_in_dir parameter).
+Image download (sentinel_image_download.py) relies on  prepare_csv_data, which preprocesses all the VIIRS fire data saved under a specific directory (pointed by csv_in_dir parameter).
 The processing involves filtering, transforming, and cleaning the data to make it more meaningful and easier to analyze.
 
 License
