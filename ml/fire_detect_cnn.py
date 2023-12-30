@@ -24,6 +24,7 @@ EXT = '.jpg'
 
 
 def fetch_images(base_path, sample_fraction=1.0):
+    # This function retrieves the images with extension EXT (.jpg in this case) from "fire" and "nofire" directories under the specified location (base_path) 
     fire_images = [f for f in os.listdir(os.path.join(base_path, 'fire')) if f.endswith(EXT)]
     nofire_images = [f for f in os.listdir(os.path.join(base_path, 'nofire')) if f.endswith(EXT)]
 
@@ -34,6 +35,9 @@ def fetch_images(base_path, sample_fraction=1.0):
 
 
 def split_data(base_path, sample_fraction=1.0):
+    # This function splits the images between test and training in the 40:60 ratio with the test data further split 50:50 between the test and validation
+    # Sample fraction indicates how much fraction of the data in the base_path should be considered. Default on 1 indicates 100%
+
     fire_images, nofire_images = fetch_images(base_path, sample_fraction=sample_fraction)
 
     fire_train, fire_temp = train_test_split(fire_images, test_size=0.4, random_state=42)
