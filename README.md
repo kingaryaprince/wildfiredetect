@@ -10,6 +10,7 @@ This program has two components, one that downloads fire (and nofire) related im
 This script downloads wildfire and non-wildfire images from Sentinel-2, utilizing parameters based on VIIRS data. It requires SentinelHub credentials and specific configurations, including environment variables.
 
 **Usage:**
+#### To download imagery data from SentinelHub:
 ```bash
 python sentinel_image_download.py backward_days=0 forward_days=1
 ```
@@ -17,17 +18,12 @@ python sentinel_image_download.py backward_days=0 forward_days=1
 *   The script downloads images from a range defined by `backward_days` and `forward_days` relative to the fire date (`fire_date` or `acq_date`).
 *   For optimal results, download images with TRUECOLOR and FIREMASK configurations from SentinelHub.
 
-  2. Wildfire Detection (ml\fire_detect_cnn.py)
-A CNN-based deep learning model trained on labeled wildfire images (fire and nofire).
-
-Usage:
-
 ### 2. Wildfire Detection (ml\fire_detect_cnn.py)
 A CNN-based deep learning model trained on labeled wildfire images (fire and nofire).
 
 **Usage:**
 
-To train and test the model:
+#### To train and test the model:
 ```bash
 python fire_detect_cnn.py --path C:/wildfire/data/images/all --epochs 10 --batch 32 --optimizer adam --train
 ```
