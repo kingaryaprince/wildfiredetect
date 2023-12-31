@@ -44,7 +44,7 @@ python fire_detect_cnn.py --path C:/wildfire/data/images/all --test --model_path
   - `sentinelhub`
   - `pandas`
   - `numpy`
-  - `PIL` (Python Imaging Library)
+  - `PIL`
   - `logging`
   - `argparse`
   - `os`
