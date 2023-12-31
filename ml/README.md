@@ -1,6 +1,7 @@
 # Wildfire Image Classification using Deep Learning
 
-This Python program is designed to train and evaluate a deep learning model for wildfire detection using image data. It utilizes Convolutional Neural Networks (CNNs) to classify images into 'fire' and 'nofire' categories.
+This directory contains a collection of machine learning programs, all aimed at image classification, intending to assess and compare their performance. 
+The `fire_detect_cnn.py` program utilizes Convolutional Neural Networks (CNNs) to conduct binary classification, determining the presence or absence of wildfires in images.
 
 ## Requirements
 
