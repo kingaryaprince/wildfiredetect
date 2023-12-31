@@ -70,16 +70,19 @@ Based on loss, the best model is saved in the specified path, so the test can be
 A performance plot (accuracy and loss) is saved alongside the model.
 
 ## Note
-Paths mentioned are defaults and should be modified based on actual requirements.
-Ensure all directories exist or are created before running the scripts.
-Respect image copyrights and terms of use when using SentinelHub or other services.
 The sentinel_image_download.py script relies on prepare_csv_data for preprocessing VIIRS fire data.
 
+- Paths mentioned should be modified based on actual requirements (e.g., input path where the VIIRS CSV data are saved).
+- Ensure all directories exist or are created before running the scripts.
+- Respect image copyrights and terms of use when using SentinelHub or other services.
+
+
 ## License
-This project is licensed under the MIT License.
+This project is provided for educational purposes only. It is available for anyone to use, modify, and distribute in any manner they deem fit. However, please be aware that the creator of this project bears no responsibility for any consequences, legal or otherwise, resulting from its use. Users should ensure they comply with all applicable laws and regulations in their use of this project. The creator makes no representations or warranties regarding the legality or suitability of this project for any particular purpose.
+
 
 ## Citation
-The study utilized VIIRS and MODIS fire data to download corresponding satellite images via the SentinelHub platform. CSV file for the last several years 
+This study utilized VIIRS and MODIS fire data to download corresponding satellite images via the SentinelHub platform. CSV file for the last several years 
 (https://firms.modaps.eosdis.nasa.gov/download/).
 
 ## Acknowledgments
