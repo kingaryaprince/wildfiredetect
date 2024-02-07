@@ -1,7 +1,6 @@
 # Wildfire Data Processing Script
 
-This Python script processes wildfire data by filtering and clustering based on various parameters. It is designed to handle CSV files containing wildfire data, allowing users to specify date ranges, geographic coordinates, and other criteria for data selection and analysis.
-
+This Python script processes wildfire data by filtering and clustering based on various parameters. It is designed to handle CSV files containing wildfire data, allowing users to specify date ranges, geographic coordinates, and other criteria for data selection and analysis. Images from SentinelHub are downloaded based on the filtered coordinates and date ranges.
 ## Requirements
 
 - Python 3.x
